@@ -1,0 +1,66 @@
+{
+  "id": 1,
+  "name": "My list",
+  "list":[{
+      "id": 1,
+      "date": "07-OCT-2022",
+      "meals": [{
+          "id": 1,
+          "name": "meal 1",
+          "foods":[{
+                  "id": 1,
+                  "name":"Food 1",
+                  "type": 0,
+                  "amount": 10,
+                  "cal": 500
+          },
+          {
+              "id": 2,
+              "name":" Food 2",
+              "type": 0,
+              "amount": 1,
+              "cal": 500
+          }]
+      }]
+  },
+  {
+      "id": 2,
+      "date": "05-OCT-2022",
+      "meals": [{
+          "id": 1,
+          "name": "meal 2",
+          "foods":[{
+                  "id":1,
+                  "name":"100",
+                  "type": 1,
+                  "amount": 3,
+                  "cal": 100
+          },
+          {
+              "id":2,
+              "name":"Meal 200",
+              "type": 0,
+              "amount": 1,
+              "cal": 500
+          }]
+      }, 
+      {
+          "id": 2,
+          "name": "meal 2",
+          "foods":[{
+                  "id":1,
+                  "name":"101",
+                  "type": 0,
+                  "amount": 1,
+                  "cal": 150
+          },
+          {
+              "id":2,
+              "name":"Meal 200",
+              "type": 0,
+              "amount": 2,
+              "cal": 500
+          }]
+      }]
+  }]
+}

@@ -1,0 +1,18 @@
+[{
+    "id": 9001,
+    "name": "Tomato",
+    "type": 0,
+    "cal": 100
+},
+{
+  "id": 9002,
+  "name": "Eggplant",
+  "type": 1,
+  "cal": 50
+},
+{
+  "id": 9004,
+  "name": "Egg",
+  "type": 1,
+  "cal": 350
+}]
