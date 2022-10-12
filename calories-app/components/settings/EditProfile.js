@@ -24,10 +24,10 @@ async function saveData(data) {
 }
 
 export default function EditProfile() {
-  const [enterGenderStateText, setGenderStateText] = useState('')
-  const [enterHeightStateText, setHeightStateText] = useState('')
-  const [enterWeightStateText, setWightStateText] = useState('')
-  const [enterAgeStateText, setAgeStateText] = useState('')
+  const [enterGenderStateText, setGenderStateText] = useState('' +ProfileFile.gender)
+  const [enterHeightStateText, setHeightStateText] = useState('' + ProfileFile.height)
+  const [enterWeightStateText, setWeightStateText] = useState('' + ProfileFile.weight)
+  const [enterAgeStateText, setAgeStateText] = useState('' + ProfileFile.age)
   const [genderState, setGenderState] = useState([])
   const [heightState, setHeightState] = useState([])
   const [weightState, setWeightState] = useState([])
@@ -39,25 +39,29 @@ export default function EditProfile() {
         <Text style={styles.contentText}>Gender</Text>
         <TextInput 
         style={styles.TextInput}
-        value={ProfileFile.gender}/>
+        value={enterGenderStateText}
+        onChangeText={setGenderStateText}/>
         
         <Text style={styles.contentText}>Height</Text>
         <TextInput 
         style={styles.TextInput}
-        value={ProfileFile.height}/>
+        value={enterHeightStateText}
+        onChangeText={setHeightStateText}/>
         <Text style={styles.afterText}>Please enter height in cm</Text>
         
         <Text style={styles.contentText}>Weight</Text>
         <TextInput 
         style={styles.TextInput}
-        value={ProfileFile.weight}/>
+        value={enterWeightStateText}
+        onChangeText={setWeightStateText}/>
         <Text style={styles.afterText}>Please enter weight is in kg.</Text>
 
 
         <Text style={styles.contentText}>Age</Text>
         <TextInput 
         style={styles.TextInput}
-        value={ProfileFile.age}/>
+        value={enterAgeStateText}
+        onChangeText={setAgeStateText}/>
         <Text></Text>
         <Button style={styles.buttonContainer} title= 'Edit'/>
         <StatusBar style="auto" />
