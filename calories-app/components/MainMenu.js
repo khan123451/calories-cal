@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import * as FileSystem from 'expo-file-system'
 import DATA from './Items/List/list.json'
+import { Ionicons } from '@expo/vector-icons'
 
 function editDate(enterText) {
   
@@ -10,6 +11,10 @@ function editDate(enterText) {
 }
 
 function editMeal(enterText) {
+
+}
+
+function addFood() {
 
 }
 
@@ -56,23 +61,52 @@ export default function MainMenu() {
 
     return(
     <View style={styles.foodBody}>
-    <Text>Name: {name} </Text>
-    <Text>Quantity: {amount} {unit} </Text>
-    <Text>Total Calories: {totAmount} </Text>
+      <Text style={styles.foodText}>{name} </Text>
+      <Text style={styles.foodText}>{amount} {unit} </Text>
+      <Text style={styles.foodText}>{totAmount} Cal</Text>
+    </View>);
+  };
+
+  const AddFood = () => {
+
+    return(
+    <View style={styles.addBody}>
+      <></>
+      <Ionicons size={36} color="white" name= "add-outline" title="Add Food" onPress={() =>{
+          addFood()}}/>
+      <></>
+    </View>);
+  };
+
+  const AddMeal = () => {
+
+    return(
+    <View style={styles.mealContainer}>
+      <></>
+      <Ionicons size={20} color="white" name= "add-outline" title="Add Food" onPress={() =>{
+          addFood()}}/>
+      <></>
     </View>);
   };
 
   const MealList = ({ title, foods }) => {
     return (
-      <>
-      <Text style={styles.mealText}>{title}</Text>
-      {
-        foods.map(function(object, i) {
-          let totalCal = object.cal * object.amount;
-          return (<Food style={styles.foodContainer} key={i} name={object.name} amount={object.amount} type= {object.type} totAmount = {totalCal} />);
-        })
-      }
-      </>);
+      <View style={styles.viewContainer}>
+        <View style={styles.mealContainer}>
+          <Text style={styles.mealText}>{title}</Text>
+        </View>
+        <View style={styles.foodScreen}>
+          {
+            foods.map(function(object, i) {
+              let totalCal = object.cal * object.amount;
+              return (<Food style={styles.foodContainer} key={i} name={object.name} amount={object.amount} type= {object.type} totAmount = {totalCal} />);
+            })
+          }
+          <View>
+            <AddFood />
+          </View>
+        </View>
+      </View>);
   }
   
   /*
@@ -88,13 +122,18 @@ export default function MainMenu() {
   const DateList = ({ title, meals }) => {
     
     return (
-    <>
-    <Text style={styles.dateContainer}>{title}</Text>
+    <View style={styles.sectionContainer}>
+    <View style={styles.dateContainer}>
+      <Text style={styles.dateText}>{title}</Text>
+    </View>
     { meals.map(function(object, i) {
       return (<MealList style={styles.mealContainer} title={object.name} foods={object.foods} key={i}/>);
       })
     }
-    </>);}
+    <View>
+      <AddMeal />
+    </View>
+    </View>);}
 
   const renderItem = ({ item }) => {
     return (
@@ -103,12 +142,18 @@ export default function MainMenu() {
   
   return (
     <>
-    <View>
-    <Text style={styles.listName}>{listName}</Text>
+    <View style={styles.fullContainer}>
       <FlatList
         data={jsonfile} 
         renderItem={renderItem} 
         keyExtractor={item => item.id}
+        ListHeaderComponent={() => (
+          <View style={styles.listHeader}>
+            <Text style={styles.listName}>{listName}</Text>
+            <Ionicons style={styles.listButton} name="pencil-outline" size={20}/>
+          </View>
+        )}
+        ListHeaderComponentStyle={styles.listName}
         //editHandler={editHandler}
       />
     </View>
@@ -128,36 +173,99 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     marginHorizontal: 200,
   },
+  fullContainer: {
+  },
   title: {
     textAlign: 'left',
     left:0,
     fontSize: 20,
   },
+  sectionContainer:{
+    padding: 10,
+    paddingBottom:20
+  },
   dateContainer: {
-    fontSize: 24
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  dateText:{
+    fontSize: 24,
+    fontWeight:'bold',
+    color: '#333',
+    fontFamily:'Roboto'
   },
   mealText: {
     fontSize: 20,
-    color: 'orange',
+    color: 'white',
     fontWeight: 'bold'
   },
   mealContainer: {
-    backgroundColor: 'red',
+    backgroundColor: 'lightpink',
+    borderStyle: 'dotted',
     padding: 20,
+    marginVertical:5,
+    marginHorizontal:50,
+    fontFamily: 'Roboto',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10
+  },
+  foodScreen: {
+    marginHorizontal: 10,
+    flexDirection:'row',
+    flexWrap:'nowrap'
   },
   foodContainer: {
     padding: 15,
     justifyContent: 'flex-end'
   },
   foodBody: {
+    flexDirection:'column',
+    alignItems: 'center',
+    justifyContent:'center',
     backgroundColor: 'lightblue',
+    padding: 20,
     marginHorizontal:15,
     marginVertical:10,
+    borderRadius: 10,
+    flexDirection:'column'
+  },
+  foodText:{
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  addBody: {
+    flexDirection:'column',
+    alignItems: 'center',
+    justifyContent:'center',
+    backgroundColor: 'lightblue',
+    padding: 20,
+    paddingVertical:40,
+    marginHorizontal:15,
+    marginVertical:10,
+    borderRadius: 10,
     flexDirection:'column'
   },
   listName: {
     fontWeight:'bond',
+    color: 'gray',
+    justifyContent: 'center',
+    alignItems:'center',
     fontSize:40,
-    padding: 10
+    padding: 10,
+    flexWrap:'nowrap'
+  },
+  listButton: {
+    fontWeight:'bond',
+    color: 'gray',
+    justifyContent: 'center',
+    alignItems:'center',
+    paddingTop:30,
+    padding: 10,
+    flexWrap:'nowrap'
+  },
+  listHeader:{
+    flexDirection:'row'
   }
 });

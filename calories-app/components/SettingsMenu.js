@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -27,22 +27,28 @@ function DirectoryScreen() {
 
 function SettingsMenu() {
   const ref = React.useRef(null);
+  const [buttonShow, setButtonShow] = useState(true);
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.buttonView}>
-      <Button
-        style={styles.settingButton}
-        onPress={() => ref.current && ref.current.navigate('Profile')}
-        title="Edit Profile"
-      />
-      <Text></Text>
-      <Button
-        style={styles.settingButton}
-        onPress={() => ref.current && ref.current.navigate('Directory')}
-        title="Edit Directory"
-      />
-      </View>
+      {buttonShow?
+        <View style={styles.buttonView}>
+          <Button
+            style={styles.settingButton}
+            onPress={() => {
+              setButtonShow(!buttonShow)
+              ref.current && ref.current.navigate('Profile')}}
+            title="Edit Profile"
+          />
+          <Text></Text>
+          <Button
+            style={styles.settingButton}
+            onPress={() => {
+              setButtonShow(!buttonShow)
+              ref.current && ref.current.navigate('Directory')}}
+            title="Edit Directory"
+          />
+        </View> : null}
       <NavigationContainer ref={ref} independent={true}>
         <Stack.Navigator initialRouteName="Empty" >
           <Stack.Screen name="Empty" component={EmptyScreen} options={{headerShown: false}}/>

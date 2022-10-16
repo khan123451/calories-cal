@@ -55,9 +55,9 @@ export default function BottomBar() {
         tabBarInactiveTintColor: 'gray',
       })}
       >
-        <Tab.Screen style={styles.appIcon} name="Camera" component={CameraScreen} />
-        <Tab.Screen style={styles.appIcon} name="Menu" component={MenuScreen} />
-        <Tab.Screen style={styles.appIcon} name="Settings" component={SettingsScreen} />
+        <Tab.Screen style={styles.appIcon} name="Camera" component={CameraScreen} options={{unmountOnBlur: true}} />
+        <Tab.Screen style={styles.appIcon} name="Menu" component={MenuScreen} options={{unmountOnBlur: true}} />
+        <Tab.Screen style={styles.appIcon} name="Settings" component={SettingsScreen} options={{unmountOnBlur: true}} />
       </Tab.Navigator>
     </NavigationContainer>
   );

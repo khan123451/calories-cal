@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import * as FileSystem from 'expo-file-system'
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import ProfileFile from './profile/profile.json'
-
+import {Picker} from '@react-native-picker/picker'
 
 function editButton(enterText) {
   console.log(enterText)
@@ -33,14 +33,31 @@ export default function EditProfile() {
   const [weightState, setWeightState] = useState([])
   const [ageState, setAgeState] = useState([])
 
+  const pickerRef = useRef();
+
+  function open() {
+    pickerRef.current.focus();
+  }
+
+  function close() {
+    pickerRef.current.blur();
+  }
+
   return (
     <View style={styles.appContainer}>
       <View style={styles.inputContainer}>
         <Text style={styles.contentText}>Gender</Text>
-        <TextInput 
-        style={styles.TextInput}
-        value={enterGenderStateText}
-        onChangeText={setGenderStateText}/>
+        <Picker
+          ref={pickerRef}
+          selectedValue={genderState}
+          onValueChange={(itemValue, itemIndex) =>
+            setGenderState(itemValue)
+          }>
+          <Picker.Item label="" value="0" />
+          <Picker.Item label="Male" value="1" />
+          <Picker.Item label="Female" value="2" />
+          <Picker.Item label="Other" value="3" />
+        </Picker>
         
         <Text style={styles.contentText}>Height</Text>
         <TextInput 
@@ -87,7 +104,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }, 
   TextInput: {
-    backgroundColor: 'orange'
+    backgroundColor: 'lightyellow'
   },
   buttonContainer:{
   }

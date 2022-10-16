@@ -1,22 +1,22 @@
 {
   "id": 1,
-  "name": "My list",
+  "name": "My Dietary",
   "list":[{
       "id": 1,
       "date": "07-OCT-2022",
       "meals": [{
           "id": 1,
-          "name": "meal 1",
+          "name": "Breakfast",
           "foods":[{
                   "id": 1,
-                  "name":"Food 1",
+                  "name":"Tomato",
                   "type": 0,
-                  "amount": 10,
-                  "cal": 500
+                  "amount": 0.5,
+                  "cal": 200
           },
           {
               "id": 2,
-              "name":" Food 2",
+              "name":" Banana",
               "type": 0,
               "amount": 1,
               "cal": 500
@@ -28,17 +28,17 @@
       "date": "05-OCT-2022",
       "meals": [{
           "id": 1,
-          "name": "meal 2",
+          "name": "Lunch",
           "foods":[{
                   "id":1,
-                  "name":"100",
+                  "name":"Fried Egg",
                   "type": 1,
                   "amount": 3,
                   "cal": 100
           },
           {
               "id":2,
-              "name":"Meal 200",
+              "name":"Rice",
               "type": 0,
               "amount": 1,
               "cal": 500
@@ -46,20 +46,13 @@
       }, 
       {
           "id": 2,
-          "name": "meal 2",
+          "name": "Snack",
           "foods":[{
                   "id":1,
-                  "name":"101",
+                  "name":"Pear",
                   "type": 0,
                   "amount": 1,
-                  "cal": 150
-          },
-          {
-              "id":2,
-              "name":"Meal 200",
-              "type": 0,
-              "amount": 2,
-              "cal": 500
+                  "cal": 1500
           }]
       }]
   }]
