@@ -2,7 +2,7 @@ import { Camera } from 'expo-camera'
 import { useState, useRef, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
-import { ActivityIndicator, StyleSheet, Text, View, Button, TextInput, Image , SafeAreaView} from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View, Box, TouchableOpacity, Button, TextInput, Image , SafeAreaView} from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
 import { Picker } from '@react-native-picker/picker'
 import Directory from './settings/directory/directory.json'
@@ -11,6 +11,101 @@ function addFood (food, qty) {
   console.log(food)
   console.log(qty)
 }
+/*
+import DATA from './Items/List/list.json'
+import * as RNFS from 'react-native-fs'
+Date.prototype.toShortFormat = function() {
+
+  const monthNames = ["JAN", "FEB", "MAR", "APR",
+                      "MAY", "JUN", "JUL", "AUG",
+                      "SEP", "OCT", "NOV", "DEC"];
+  
+  const day = this.getDate();
+  
+  const monthIndex = this.getMonth();
+  const monthName = monthNames[monthIndex];
+  
+  const year = this.getFullYear();
+  
+  return day + "-" + monthName + "-" + year;  
+}
+
+function addFood (food, qty) {
+  var jsonfileData = DATA
+  var hasDate = false
+  
+  for (var i in jsonfileData.list){
+    console.log(jsonfileData.list[i])
+    if(jsonfileData.list[i].date == new Date().toShortFormat()){
+      hasDate = true
+      for(var j in jsonfileData.list[i].meals){
+        if(jsonfileData.list[i].meals[j].name == "Meal Scan"){
+          var foodJson = {
+                  "id": 0,
+                  "name":food,
+                  "type": 0,
+                  "amount": qty,
+                  "cal": getCal(food)
+          }
+          jsonfileData.list[i].meals[j].foods.append(foodJson)
+        } else{
+          var mealJson = {
+            "id": 0,
+            "name": "Meal Scan",
+            "foods":[{
+                    "id": 0,
+                    "name":food,
+                    "type": 0,
+                    "amount": qty,
+                    "cal": getCal(food)
+            }]
+          }
+          jsonfileData.list[i].meals[j].meals.append(mealJson)
+        }
+      }
+    }
+  }
+  if (!hasDate){
+    var dateJson = [{
+      "id": 0,
+      "date": new Date().toShortFormat(),
+      "meals": [{
+          "id": 0,
+          "name": "Meal Scan",
+          "foods":[{
+                  "id": 0,
+                  "name":food,
+                  "type": 0,
+                  "amount": qty,
+                  "cal": getCal(food)
+          }]
+        }]
+    }]
+    jsonfileData.list.append(dateJson)
+  }
+
+  writeFile = () => {
+    RNFS.writeFile('/storage/emulated/0/DATA/data.json', jsonfileData)
+      .then((res) => {
+        console.log(res);
+        const d = JSON.parse(res);
+        this.setState({ content: res, fruitType: d.type });
+      })
+      .catch((err) => {
+        console.log(err.message, err.code);
+      });
+  };
+
+}
+
+function getCal(food){
+ for(var i in Directory){
+  if(Directory[i].name = food){
+    return Directory[i].cal
+  }
+ }
+}
+*/
 
 export default function CameraMenu() {
   let cameraRef = useRef()
@@ -100,6 +195,39 @@ export default function CameraMenu() {
       })
     }
 
+    const addItem = () =>{
+      console.log("add")
+    }
+    /*
+    const addItem = () =>{
+      return(
+        <>
+        <View style={styles.bodyContainer}>
+            <View style={styles.pickerItem}>
+              <Picker
+                style={{ height: 50, width: 100, color:'black' }}
+                selectedValue={foodState}
+                onValueChange={(item, index) =>
+                  {
+                  setFoodState(item)}}>
+                  {itemList(resultState)}
+                
+              </Picker>
+            </View>
+            <TextInput 
+              style={styles.TextInput}
+              value={qtyState}
+              onChange={val => setQtyState(val)}/>
+          </View>
+          <View style={styles.itemContainer}>
+            <Ionicons size={20} color="white" name= "add-outline" title="Add Item" onPress={() =>{
+              addItem()}}/>
+          </View>
+        </>
+      )
+    }
+    */
+
     return(
       <>
         {resultState == ""? 
@@ -131,13 +259,19 @@ export default function CameraMenu() {
               blurOnSubmit
               style={styles.TextInput}
               value={qtyState}
-              onChangeText= { val => 
-                setQtyState(val)}/>
-              
+              onChange= {(name, val, text) => {
+                console.log(val)
+                setQtyState(val)}}/>
+          </View>
+          <View style={styles.itemContainer}>
+            <Ionicons size={20} color="white" name= "add-outline" title="Add Item" onPress={() =>{
+              addItem()}}/>
           </View>
           <View style= {styles.returnButtonContainer}>
             <View style= {styles.addButtonContainer}>
               <Button color="green" title="Add" onPress={() => {
+                    console.log(foodState)
+                    console.log(qtyState)
                     setLoadingState(false)
                     addFood(foodState, qtyState)
                     setPhoto(undefined)}} />
