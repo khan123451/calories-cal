@@ -1,47 +1,42 @@
-import { useState, useRef } from 'react';
-import * as FileSystem from 'expo-file-system'
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
-import ProfileFile from './profile/profile.json'
+import { useState, useRef, useEffect } from 'react'
+import { StatusBar } from 'expo-status-bar'
+import { StyleSheet, Text, View, Button, TextInput } from 'react-native'
 import {Picker} from '@react-native-picker/picker'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
-function editButton(enterText) {
-  console.log(enterText)
-}
 
-async function saveData(data) {
-  // Requests permissions for external directory
-  const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
-
-  if (permissions.granted) {
-  // Gets SAF URI from response
-  const uri = permissions.directoryUri;
-
-  // Gets all files inside of selected directory
-  const files = await StorageAccessFramework.readDirectoryAsync(uri);
-  alert(`Files inside ${uri}:\n\n${JSON.stringify(files)}`);
-  }
-}
 
 export default function EditProfile() {
-  const [enterGenderStateText, setGenderStateText] = useState('' +ProfileFile.gender)
-  const [enterHeightStateText, setHeightStateText] = useState('' + ProfileFile.height)
-  const [enterWeightStateText, setWeightStateText] = useState('' + ProfileFile.weight)
-  const [enterAgeStateText, setAgeStateText] = useState('' + ProfileFile.age)
+  const [enterHeightStateText, setHeightStateText] = useState('')
+  const [enterWeightStateText, setWeightStateText] = useState('')
+  const [enterAgeStateText, setAgeStateText] = useState('')
   const [genderState, setGenderState] = useState([])
-  const [heightState, setHeightState] = useState([])
-  const [weightState, setWeightState] = useState([])
-  const [ageState, setAgeState] = useState([])
 
   const pickerRef = useRef();
 
-  function open() {
-    pickerRef.current.focus();
+  const saveData = async(value) => {
+    try{
+      const jsonVal = JSON.stringify(value)
+      await AsyncStorage.setItem('key', jsonVal)
+    } catch(e) {
+      console.log(e)
+    }
   }
 
-  function close() {
-    pickerRef.current.blur();
+  const getData = async() => {
+    try{
+      const jsonVal = JSON.parse(await AsyncStorage.getItem('key'))
+      setAgeStateText(jsonVal.enterAgeStateText)
+      setHeightStateText(jsonVal.enterHeightStateText)
+      setWeightStateText(jsonVal.enterWeightStateText)
+      setGenderState(jsonVal.genderState)
+    } catch(e) {
+      console.log(e)
+    }
+
   }
+
+  useEffect(() => {getData()}, []);
 
   return (
     <View style={styles.appContainer}>
@@ -61,6 +56,7 @@ export default function EditProfile() {
         
         <Text style={styles.contentText}>Height</Text>
         <TextInput 
+        keyboardType="numeric"
         style={styles.TextInput}
         value={enterHeightStateText}
         onChangeText={setHeightStateText}/>
@@ -68,6 +64,7 @@ export default function EditProfile() {
         
         <Text style={styles.contentText}>Weight</Text>
         <TextInput 
+        keyboardType="numeric"
         style={styles.TextInput}
         value={enterWeightStateText}
         onChangeText={setWeightStateText}/>
@@ -76,11 +73,12 @@ export default function EditProfile() {
 
         <Text style={styles.contentText}>Age</Text>
         <TextInput 
+        keyboardType="numeric"
         style={styles.TextInput}
         value={enterAgeStateText}
         onChangeText={setAgeStateText}/>
         <Text></Text>
-        <Button style={styles.buttonContainer} title= 'Edit'/>
+        <Button style={styles.buttonContainer} title= 'Edit' onPress={() => saveData({enterHeightStateText, enterWeightStateText, enterAgeStateText, genderState })}/>
         <StatusBar style="auto" />
       </View>
     </View>

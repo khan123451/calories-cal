@@ -5,33 +5,70 @@ import * as FileSystem from 'expo-file-system'
 import DATA from './Items/List/list.json'
 import { Ionicons } from '@expo/vector-icons'
 
-function editDate(enterText) {
-  
-
-}
-
-function editMeal(enterText) {
-
-}
-
 function addFood() {
+  //Call add food function
 
 }
 
-function editFood(enterText) {
+function addMeal(){
+  //Call add meal function
 
 }
 
-function deleteDate(enterText) {
+function addFoodHelper() {
+  const [foodNameState, setFoodNameState] = useState('')
+  const [foodQtyState, setFoodQtyState] = useState('')
+  const [foodCalState, setFoodCalState] = useState('')
 
+  return(
+<View>
+    <View>
+      <Text>Food Name</Text>
+      <TextInput 
+                blurOnSubmit
+                style={styles.TextInput}
+                value={foodNameState}
+                onChangeText= { val => 
+                  setFoodNameState(val)}/>
+    </View>
+    <View>
+      <Text>Food Amount</Text>
+      <TextInput 
+                blurOnSubmit
+                style={styles.TextInput}
+                value={foodQtyState}
+                onChangeText= { val => 
+                  setFoodQtyState(val)}/>
+    </View>
+    <View>
+      <Text>Food Calories</Text>
+      <TextInput 
+                blurOnSubmit
+                style={styles.TextInput}
+                value={foodCalState}
+                onChangeText= { val => 
+                  setFoodCalState(val)}/>
+    </View>
+    <Button color="green" title="Add" onPress={() => {
+                    addFood(foodNameState, foodQtyState, foodCalState)}} />
+  </View>);
 }
 
-function deleteMeal(enterText) {
+function addMealHelper(){
 
-}
-
-function deleteFood(enterText) {
-
+  const [mealState, setMealState] = useState('');
+  return(
+  <View>
+    <Text>Meal name</Text>
+    <TextInput 
+              blurOnSubmit
+              style={styles.TextInput}
+              value={mealState}
+              onChangeText= { val => 
+                setMealState(val)}/>
+    <Button color="green" title="Add" onPress={() => {
+                    addMeal(mealState)}} />
+  </View>);
 }
 
 export default function MainMenu() {
@@ -45,6 +82,8 @@ export default function MainMenu() {
 
   const jsonfile = DATA.list;
   const listName = DATA.name;
+
+  const [mealState, setMealState] = useState('')
 
   const Food = ({ name, amount, type, totAmount}) => {
     let unit = '';
@@ -67,24 +106,24 @@ export default function MainMenu() {
     </View>);
   };
 
-  const AddFood = () => {
+  const AddFoodIcon = () => {
 
     return(
     <View style={styles.addBody}>
       <></>
       <Ionicons size={36} color="white" name= "add-outline" title="Add Food" onPress={() =>{
-          addFood()}}/>
+          addFoodHelper()}}/>
       <></>
     </View>);
   };
 
-  const AddMeal = () => {
+  const AddMealIcon = () => {
 
     return(
     <View style={styles.mealContainer}>
       <></>
       <Ionicons size={20} color="white" name= "add-outline" title="Add Food" onPress={() =>{
-          addFood()}}/>
+          addMealHelper()}}/>
       <></>
     </View>);
   };
@@ -103,21 +142,11 @@ export default function MainMenu() {
             })
           }
           <View>
-            <AddFood />
+            <AddFoodIcon />
           </View>
         </View>
       </View>);
   }
-  
-  /*
-  const editDateHandler = (todoKey, newText) => {
-    const newTodos = [...todos];
-    const index = newTodos.findIndex(todos => todos.key === todoKey);
-    newTodos[index] = Object.assign(newTodos[index], { value: newText });
-  
-    setTodos(newTodos);
-  };
-  */
 
   const DateList = ({ title, meals }) => {
     
@@ -131,7 +160,7 @@ export default function MainMenu() {
       })
     }
     <View>
-      <AddMeal />
+      <AddMealIcon />
     </View>
     </View>);}
 
@@ -150,11 +179,10 @@ export default function MainMenu() {
         ListHeaderComponent={() => (
           <View style={styles.listHeader}>
             <Text style={styles.listName}>{listName}</Text>
-            <Ionicons style={styles.listButton} name="pencil-outline" size={20}/>
+            {/*<Ionicons style={styles.listButton} name="pencil-outline" size={20}/>*/}
           </View>
         )}
         ListHeaderComponentStyle={styles.listName}
-        //editHandler={editHandler}
       />
     </View>
     </>

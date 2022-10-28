@@ -6,10 +6,10 @@ import { ActivityIndicator, StyleSheet, Text, View, Button, TextInput, Image , S
 import * as MediaLibrary from 'expo-media-library';
 import { Picker } from '@react-native-picker/picker'
 import Directory from './settings/directory/directory.json'
+//import { addFood } from './data/MenuController'
 
-function addFood (food, qty) {
-  console.log(food)
-  console.log(qty)
+function addFoodHelper (food, qty) {
+  addFood('', '', food, qty)
 }
 
 export default function CameraMenu() {
@@ -139,7 +139,7 @@ export default function CameraMenu() {
             <View style= {styles.addButtonContainer}>
               <Button color="green" title="Add" onPress={() => {
                     setLoadingState(false)
-                    addFood(foodState, qtyState)
+                    addFoodHelper(foodState, qtyState)
                     setPhoto(undefined)}} />
             </View>
 
