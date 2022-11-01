@@ -1,91 +1,183 @@
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StatusBar } from 'expo-status-bar'
-import { StyleSheet, Text, View, FlatList } from 'react-native'
-import * as FileSystem from 'expo-file-system'
-import DATA from './Items/List/list.json'
+import { StyleSheet, Text, View, FlatList, TextInput, Button, Pressable } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { addFood, addMeal, addDate, getData, removeDate, removeMeal, removeFood } from './data/MenuController'
+import { NavigationContainer } from '@react-navigation/native'
+import { createStackNavigator } from '@react-navigation/stack'
 
-function addFood() {
+function addDateHelper(date) {
   //Call add food function
-
+  return addDate(date)
 }
 
-function addMeal(){
+function addMealHelper(date, meal){
   //Call add meal function
-
+  return addMeal(date, meal)
 }
 
-function addFoodHelper() {
-  const [foodNameState, setFoodNameState] = useState('')
-  const [foodQtyState, setFoodQtyState] = useState('')
-  const [foodCalState, setFoodCalState] = useState('')
-
-  return(
-<View>
-    <View>
-      <Text>Food Name</Text>
-      <TextInput 
-                blurOnSubmit
-                style={styles.TextInput}
-                value={foodNameState}
-                onChangeText= { val => 
-                  setFoodNameState(val)}/>
-    </View>
-    <View>
-      <Text>Food Amount</Text>
-      <TextInput 
-                blurOnSubmit
-                style={styles.TextInput}
-                value={foodQtyState}
-                onChangeText= { val => 
-                  setFoodQtyState(val)}/>
-    </View>
-    <View>
-      <Text>Food Calories</Text>
-      <TextInput 
-                blurOnSubmit
-                style={styles.TextInput}
-                value={foodCalState}
-                onChangeText= { val => 
-                  setFoodCalState(val)}/>
-    </View>
-    <Button color="green" title="Add" onPress={() => {
-                    addFood(foodNameState, foodQtyState, foodCalState)}} />
-  </View>);
+function addFoodHelper(date, meal, food, qty, cal) {
+  //Call add food function
+  return addFood(date, meal, food, qty, cal)
 }
 
-function addMealHelper(){
+function removeDateHelper(date) {
+  //Call remove food function
+  return removeDate(date)
+}
 
-  const [mealState, setMealState] = useState('');
-  return(
-  <View>
-    <Text>Meal name</Text>
-    <TextInput 
-              blurOnSubmit
-              style={styles.TextInput}
-              value={mealState}
-              onChangeText= { val => 
-                setMealState(val)}/>
-    <Button color="green" title="Add" onPress={() => {
-                    addMeal(mealState)}} />
-  </View>);
+function removeMealHelper(date, meal){
+  //Call remove meal function
+  return removeMeal(date, meal)
+}
+
+function removeFoodHelper(date, meal, food) {
+  //Call remove food function
+  return removeFood(date, meal, food)
 }
 
 export default function MainMenu() {
+  const ref = React.useRef(null)
+  const [menuVal, setMenu] = useState([])
 
-  /*
-  const [enterDateStateText, setDateStateText] = useState('')
-  const [enterMealStateText, setMealStateText] = useState('')
-  const [enterFoodStateText, setFoodStateText] = useState('')
-  const [foodState, setFoodState] = useState([])
-  */
+  //console.log('test: ' + JSON.stringify(menuVal))
+  const jsonfile = menuVal.list
+  const listName = menuVal.name
+  const [reload, setReload] = useState(0)
+  const [dateButtonShow, setDateButtonShow] = useState(false);
+  useEffect(() => {
+    getData().then(menuVal => setMenu(menuVal))
+  }, [reload])
 
-  const jsonfile = DATA.list;
-  const listName = DATA.name;
+  const AddFoodScreen = ({ dateVal, mealVal }) => {
+    const [foodNameState, setFoodNameState] = useState('')
+    const [foodQtyState, setFoodQtyState] = useState('')
+    const [foodCalState, setFoodCalState] = useState('')
+  
+    return(
+  <View>
+      <View>
+        <Text>Food Name</Text>
+        <TextInput 
+                  blurOnSubmit
+                  style={styles.TextInput}
+                  value={foodNameState}
+                  onChangeText= { val => 
+                    setFoodNameState(val)}/>
+      </View>
+      <View>
+        <Text>Food Amount</Text>
+        <TextInput 
+                  blurOnSubmit
+                  keyboardType="numeric"
+                  style={styles.TextInput}
+                  value={foodQtyState}
+                  onChangeText= { val => 
+                    setFoodQtyState(val)}/>
+      </View>
+      <View>
+        <Text>Food Calories</Text>
+        <TextInput 
+                  blurOnSubmit
+                  keyboardType="numeric"
+                  style={styles.TextInput}
+                  value={foodCalState}
+                  onChangeText= { val => 
+                    setFoodCalState(val)}/>
+      </View>
+      <Button color="green" title="Add Food" onPress={() => {
+                      addFoodHelper(dateVal, mealVal, foodNameState, foodQtyState, foodCalState).then(() => {
+                        setReload((r)=>r+1)
+                      });
+                      }} />
+    </View>);
+  };
 
-  const [mealState, setMealState] = useState('')
+  const AddFoodView = ({ dateVal, mealVal }) => {
+    const Stack = createStackNavigator()
 
-  const Food = ({ name, amount, type, totAmount}) => {
+
+    return(
+      <View styel={styles.AddFoodScreen}>
+        <AddFoodScreen dateVal={dateVal} mealVal={mealVal}/>
+      <NavigationContainer ref={ref} independent={true}>
+        <Stack.Navigator style={{ flex: 1 }} >
+          <Stack.Screen name="AddFood" component={AddFoodScreen} options={{headerShown: false}}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+      </View>);
+  };
+
+  const AddMealScreen = ({ dateVal }) => {
+
+    const [mealState, setMealState] = useState('');
+
+    return(
+    <View style={styles.addMealScreen}>
+      <Text>Meal</Text>
+      <TextInput 
+                blurOnSubmit
+                style={styles.TextInput}
+                value={mealState}
+                onChangeText= { val => 
+                  setMealState(val)}/>
+      <Button color="green" title="Add Meal" onPress={() => {
+                      addMealHelper(dateVal, mealState).then(() => {
+                        setReload((r)=>r+1)
+                      });
+                      }} />
+    </View>);
+  };
+
+  const AddMealView = ({ dateVal }) => {
+    const Stack = createStackNavigator()
+
+    return(
+      <View styel={styles.AddMealScreen}>
+        <AddMealScreen dateVal={dateVal}/>
+      <NavigationContainer ref={ref} independent={true}>
+        <Stack.Navigator style={{ flex: 1 }} >
+          <Stack.Screen name="AddMeal" component={AddMealScreen} options={{headerShown: false}}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+      </View>);
+  };
+
+  const AddDateScreen = () => {
+
+    const [dateState, setDateState] = useState('');
+    return(
+    <View style={styles.AddDateScreen}>
+      <Text>Date</Text>
+      <TextInput 
+                blurOnSubmit
+                style={styles.TextInput}
+                value={dateState}
+                onChangeText= { val => 
+                  setDateState(val)}/>
+      <Button color="green" title="Add Date" onPress={() => {
+                      addDateHelper(dateState).then(() => {
+                        setReload((r)=>r+1)
+                      });
+                      }} />
+    </View>);
+  };
+
+  const AddDateView = () => {
+    const Stack = createStackNavigator()
+
+    return(
+      <View styel={styles.AddDateScreen}>
+        <AddDateScreen />
+      <NavigationContainer ref={ref} independent={true}>
+        <Stack.Navigator style={{ flex: 1 }} >
+          <Stack.Screen name="AddDate" component={AddDateScreen} options={{headerShown: false}}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+      </View>);
+  };
+
+  const Food = ({ date, meal, name, amount, type, totAmount}) => {
     let unit = '';
     switch(type){
       case 0:
@@ -103,79 +195,98 @@ export default function MainMenu() {
       <Text style={styles.foodText}>{name} </Text>
       <Text style={styles.foodText}>{amount} {unit} </Text>
       <Text style={styles.foodText}>{totAmount} Cal</Text>
+      <Ionicons style={styles.deleteFood} name= "close-outline" size={20} color="gray" onPress = { () => {
+                  removeFoodHelper(date, meal, name).then(() => {
+                    setReload((r)=>r+1)
+                  });
+                }}/>
     </View>);
   };
 
-  const AddFoodIcon = () => {
+  const MealList = ({ date, title, foods }) => {
 
-    return(
-    <View style={styles.addBody}>
-      <></>
-      <Ionicons size={36} color="white" name= "add-outline" title="Add Food" onPress={() =>{
-          addFoodHelper()}}/>
-      <></>
-    </View>);
-  };
+  const [foodButtonShow, setFoodButtonShow] = useState(false);
 
-  const AddMealIcon = () => {
-
-    return(
-    <View style={styles.mealContainer}>
-      <></>
-      <Ionicons size={20} color="white" name= "add-outline" title="Add Food" onPress={() =>{
-          addMealHelper()}}/>
-      <></>
-    </View>);
-  };
-
-  const MealList = ({ title, foods }) => {
     return (
       <View style={styles.viewContainer}>
         <View style={styles.mealContainer}>
           <Text style={styles.mealText}>{title}</Text>
+          <Ionicons style={styles.deleteMeal} name= "close-outline" size={20} color="gray" onPress = { () => {
+                  removeMealHelper(date, title).then(() => {
+                    setReload((r)=>r+1)
+                  });
+                }}/>
         </View>
-        <View style={styles.foodScreen}>
-          {
-            foods.map(function(object, i) {
-              let totalCal = object.cal * object.amount;
-              return (<Food style={styles.foodContainer} key={i} name={object.name} amount={object.amount} type= {object.type} totAmount = {totalCal} />);
-            })
-          }
-          <View>
-            <AddFoodIcon />
+        {
+          foods && foods.map(function(object, i) {
+            let totalCal = object.cal * object.amount;
+            return (<Food style={styles.foodContainer} date={date} meal={title} name={object.name} amount={object.amount} type= {object.type} totAmount = {totalCal} />);
+          })
+        }
+        <View>
+          <View style={styles.foodContainer}>
+            {foodButtonShow? <AddFoodView dateVal={date} mealVal={title}/>:
+          <View style={styles.addFood}>
+            <Pressable
+                    style={styles.addButton}
+                    onPress={() => {
+                      setFoodButtonShow(!foodButtonShow)
+                      ref.current && ref.current.navigate('AddFood')}}
+                    >
+            <Text>+ Food</Text>
+            </Pressable>
+            </View>}
           </View>
         </View>
       </View>);
   }
 
   const DateList = ({ title, meals }) => {
-    
+    const [mealButtonShow, setMealButtonShow] = useState(false);
+
     return (
     <View style={styles.sectionContainer}>
     <View style={styles.dateContainer}>
       <Text style={styles.dateText}>{title}</Text>
+      <Ionicons style={styles.deleteDate} name= "close-outline" size={20} color="gray" onPress = { () => {
+          removeDateHelper(title).then(() => {
+            setReload((r)=>r+1)
+          });
+        }}/>
     </View>
-    { meals.map(function(object, i) {
-      return (<MealList style={styles.mealContainer} title={object.name} foods={object.foods} key={i}/>);
+    { meals && meals.map(function(object, i) {
+      return (<MealList style={styles.mealContainer} date={title} title={object.name} foods={object.foods}/>);
       })
     }
     <View>
-      <AddMealIcon />
+      <View style={styles.mealContainer}>
+        {mealButtonShow? <AddMealView dateVal={title}/>:
+      <View style={styles.addMeal}>
+        <Pressable
+                style={styles.addButton}
+                onPress={() => {
+                  setMealButtonShow(!mealButtonShow)
+                  ref.current && ref.current.navigate('AddMeal')}}
+              >
+        <Text>+ Meal</Text>
+        </Pressable>
+        </View>}
+      </View>
     </View>
     </View>);}
 
   const renderItem = ({ item }) => {
     return (
-    <DateList title={item.date} meals={item.meals} key={item.id}/>);
+    <DateList title={item.date} meals={item.meals}/>);
     };
-  
+
   return (
     <>
     <View style={styles.fullContainer}>
       <FlatList
         data={jsonfile} 
         renderItem={renderItem} 
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.date}
         ListHeaderComponent={() => (
           <View style={styles.listHeader}>
             <Text style={styles.listName}>{listName}</Text>
@@ -184,6 +295,19 @@ export default function MainMenu() {
         )}
         ListHeaderComponentStyle={styles.listName}
       />
+      <View style={styles.dateContainer}>
+      {dateButtonShow? <AddDateView/>:
+      <View style={styles.addDate}>
+        <Pressable
+                style={styles.addButton}
+                onPress={() => {
+                  setDateButtonShow(!dateButtonShow)
+                  ref.current && ref.current.navigate('AddDate')}}
+              >
+        <Text>+ Date</Text>
+        </Pressable>
+        </View>}
+      </View>
     </View>
     </>
   );
@@ -208,14 +332,19 @@ const styles = StyleSheet.create({
     left:0,
     fontSize: 20,
   },
+  viewContainer: {
+    padding: 10,
+    paddingBottom:10
+  },
   sectionContainer:{
     padding: 10,
-    paddingBottom:20
+    paddingBottom:10
   },
   dateContainer: {
     padding: 10,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexDirection:'row'
   },
   dateText:{
     fontSize: 24,
@@ -225,19 +354,20 @@ const styles = StyleSheet.create({
   },
   mealText: {
     fontSize: 20,
-    color: 'white',
+    color: 'gray',
     fontWeight: 'bold'
   },
   mealContainer: {
-    backgroundColor: 'lightpink',
-    borderStyle: 'dotted',
-    padding: 20,
-    marginVertical:5,
-    marginHorizontal:50,
-    fontFamily: 'Roboto',
+    flexDirection:'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10
+    justifyContent:'center',
+    Color: 'grey',
+    padding: 5,
+    paddingVertical:10,
+    marginHorizontal:60,
+    marginVertical:10,
+    borderRadius: 10,
+    flexWrap:'nowrap'
   },
   foodScreen: {
     marginHorizontal: 10,
@@ -246,7 +376,8 @@ const styles = StyleSheet.create({
   },
   foodContainer: {
     padding: 15,
-    justifyContent: 'flex-end'
+    justifyContent: 'center',
+    flexWrap:'nowrap'
   },
   foodBody: {
     flexDirection:'column',
@@ -256,8 +387,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginHorizontal:15,
     marginVertical:10,
-    borderRadius: 10,
-    flexDirection:'column'
+    borderRadius: 10
   },
   foodText:{
     fontWeight: 'bold',
@@ -272,8 +402,26 @@ const styles = StyleSheet.create({
     paddingVertical:40,
     marginHorizontal:15,
     marginVertical:10,
+    borderRadius: 10
+  },
+  dateContainer: {
+    flexDirection:'row',
+    alignItems: 'center',
+    justifyContent:'center',
+    Color: 'grey',
+    padding: 5,
+    paddingVertical:10,
+    marginHorizontal:60,
+    marginVertical:10,
     borderRadius: 10,
-    flexDirection:'column'
+    flexWrap:'nowrap'
+  },
+  AddDateScreen:{
+    marginBottom:50,
+    width:100
+  },
+  deleteDate:{
+    flexWrap:'nowrap'
   },
   listName: {
     fontWeight:'bond',
@@ -295,5 +443,18 @@ const styles = StyleSheet.create({
   },
   listHeader:{
     flexDirection:'row'
+  },
+  AddMealScreen:{
+    position:'absolute'
+  },
+  addButton:{
+    backgroundColor: 'lightpink',
+    padding: 15,
+    marginVertical:5,
+    marginHorizontal:50,
+    fontFamily: 'Roboto',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10
   }
 });

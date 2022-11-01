@@ -9,7 +9,7 @@ import Directory from './settings/directory/directory.json'
 //import { addFood } from './data/MenuController'
 
 function addFoodHelper (food, qty) {
-  addFood('', '', food, qty)
+  addFood('', '', food, qty, '')
 }
 
 export default function CameraMenu() {

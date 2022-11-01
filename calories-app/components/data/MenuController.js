@@ -1,8 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import Directory from '../Items/List/list.json'
-import { useState } from 'react'
-
-const [menuState, setMenuState] = useState([])
 
 Date.prototype.toShortFormat = function() {
 
@@ -20,82 +17,231 @@ Date.prototype.toShortFormat = function() {
   return day + "-" + monthName + "-" + year;  
 }
 
-async function saveData(value) {
+export async function saveData(value) {
   try{
     const jsonVal = JSON.stringify(value)
     await AsyncStorage.setItem('menu', jsonVal)
-    let keyVal = await AsyncStorage.getItem('menu')
   } catch(e) {
     console.log(e)
   }
 }
 
-async function getData() {
+export async function defaultVal(){
+  let defaultMenu = {
+    name: 'My Dietary',
+    list:[]
+  }
+  const jsonVal = JSON.stringify(defaultMenu)
+  await AsyncStorage.setItem('menu', jsonVal)
+}
+
+export async function getData() {
   try{
     const jsonVal = JSON.parse(await AsyncStorage.getItem('menu'))
-    setMenuState(jsonVal)
+    if(jsonVal == null){
+      await defaultVal()
+      jsonVal = JSON.parse(await AsyncStorage.getItem('menu'))
+      return jsonVal
+    }
+
+    return jsonVal
   } catch(e) {
     console.log(e)
   }
 
 }
 
-function addFood (Date, Meal, food, qty) {
-  var jsonfileData = menuState
-  var hasDate = false
-  var MealVal = Meal == "" ? "Meal Scan" : Meal
-  var DateVal = Date == "" ? new Date().toShortFormat() : Date
-  
-  for (var i in jsonfileData.list){
-    console.log(jsonfileData.list[i])
-    if(jsonfileData.list[i].date == DateVal){
-      hasDate = true
-      for(var j in jsonfileData.list[i].meals){
-        if(jsonfileData.list[i].meals[j].name == "Meal Scan" && Meal == ""){
-          var foodJson = {
-                  "id": 0,
-                  "name":food,
-                  "type": 0,
-                  "amount": qty,
-                  "cal": getCal(food)
+export async function removeDate(dateVal) {
+  try{
+    let fullJSON= await getData()
+    fullJSON.list = fullJSON.list.filter(function(e){
+        return (e.date !== dateVal)
+    });
+    saveData(fullJSON);
+  }
+  catch(error){
+      console.log(error)
+  }
+}
+
+export async function removeMeal(dateVal, nameVal) {
+  try{
+    let fullJSON= await getData();
+    let listJSON = fullJSON.list
+    let alteredList = listJSON.filter(function(e){
+        return (e.date == dateVal)
+    });
+    let alteredDate = alteredList.meals.filter(function(e){
+      return (e.name !== nameVal)
+    });
+    saveData(fullJSON);
+  }
+  catch(error){
+      console.log(error)
+  }
+}
+
+export async function removeFood(dateVal, mealVal, foodVal) {
+  try{
+    let fullJSON= await getData()
+    fullJSON.list.filter(function(e){
+      if (e.date == dateVal){
+        e.meals.filter(function(f){
+          if(f.name == mealVal){
+            f.foods = f.foods.filter(
+              function(g){
+                if(g.name !== foodVal){
+                  return g
+                }
+              }
+            )
           }
-          jsonfileData.list[i].meals[j].foods.append(foodJson)
-        } else{
-          var mealJson = {
-            "id": 0,
-            "name": MealVal,
-            "foods":[{
-                    "id": 0,
-                    "name":food,
-                    "type": 0,
-                    "amount": qty,
-                    "cal": getCal(food)
-            }]
-          }
-          jsonfileData.list[i].meals[j].meals.append(mealJson)
+          return f
+        })
+      }
+      return e
+  });
+    saveData(fullJSON);
+  }
+  catch(error){
+      console.log(error)
+  }
+}
+
+export async function addDate(dateVal) {
+  if (dateVal == ''){
+    dateVal = new Date().toShortFormat()
+  }
+  const jsonVal = await getData()
+  let dateCheck = jsonVal.list.filter(function(e){
+    try{
+      return (e.date == dateVal)
+    } catch{
+      return '';
+    }
+  });
+  if(JSON.stringify(dateCheck) != '[]'){
+    alert('Date already existed!')
+  } else {
+    let newDate = {
+      date: dateVal,
+      meals:[]
+    }
+    jsonVal.list.push(newDate)
+    saveData(jsonVal)
+  }
+}
+
+
+export async function addMeal(dateVal, nameVal){
+  if (dateVal == ''){
+    dateVal = new Date().toShortFormat()
+  }
+  if (nameVal == ''){
+    alert('Meal cannot be none!')
+    return ;
+  }
+  var jsonVal = await getData();
+
+  var dateCheck = jsonVal.list.filter(function(e){
+    return (e.date == dateVal)
+  })
+
+  if(dateCheck == ''){
+    alert('Date has not been created! Please create date first')
+  }
+
+  jsonVal.list.filter(function(e){
+    if (e.date == dateVal){
+      var mealCheck = e.meals.filter(function(f) {
+        return f.name == nameVal
+      })
+      if(mealCheck ==''){
+        let newMeal = {
+          name: nameVal,
+          foods:[]
         }
+        e.meals.push(newMeal)
+      } else{
+        alert('Meal already existed!')
       }
     }
+    return e;
+  })
+  saveData(jsonVal)
+}
+
+export async function addFood (dateVal, mealVal, foodVal, qtyVal, calVal) {
+  if(dateVal == ""){
+    dateVal = new Date().toShortFormat()
   }
-  if (!hasDate){
-    var dateJson = [{
-      "id": 0,
-      "date": DateVal,
-      "meals": [{
-          "id": 0,
-          "name": MealVal,
-          "foods":[{
-                  "id": 0,
-                  "name":food,
-                  "type": 0,
-                  "amount": qty,
-                  "cal": getCal(food)
-          }]
-        }]
-    }]
-    jsonfileData.list.append(dateJson)
+
+  if(mealVal == ""){
+    mealVal = "Meal Scan"
   }
-  saveData(jsonfileData)
+
+  if (foodVal == ''){
+    alert('Food name cannot be none!')
+    return ;
+  }
+
+  if (qtyVal == ''){
+    alert('Quantity cannot be none!')
+    return ;
+  }
+
+  if (calVal == ''){
+    calVal = getCal(foodVal)
+    if (!calVal){
+      alert('Calorie cannot be none!')
+      return ;
+    }
+  }
+  var jsonVal = await getData()
+
+  var dateCheck = jsonVal.list.filter(function(e){
+    return (e.date == dateVal)
+  })
+
+  if(dateCheck == ''){
+    addDate(dateVal)
+  }
+
+  var mealCheck = jsonVal.list.filter(function(e){
+    if (e.date == dateVal){
+      return e.meals.filter(function(f) {
+        return f.name == mealVal
+      })
+    }
+  })
+  if(JSON.stringify(mealCheck) == '[]'){
+    addMeal(dateVal, mealVal)
+  }
+
+  jsonVal.list.filter(function (e){
+    if (e.date == dateVal){ 
+      e.meals.filter(function(f){
+        if(f.name == mealVal){
+          var foodCheck = f.foods.filter(function (g){
+              return (g.name == foodVal)})
+          if (foodCheck == ''){
+            let newFood = {
+              name: foodVal,
+              type: 0,
+              amount: qtyVal,
+              cal: calVal
+            }
+            f.foods.push(newFood)
+          } else {
+            alert('Food already existed!')
+          }
+        }
+        return f
+      })
+    }
+    return e
+  })
+  saveData(jsonVal)
 }
 
 function getCal(food){
@@ -104,9 +250,7 @@ function getCal(food){
     return Directory[i].cal
   }
  }
+ return 0
 }
 
-function addMeal(Date, Meal){
-
-}
 

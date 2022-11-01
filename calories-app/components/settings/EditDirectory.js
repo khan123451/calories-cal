@@ -14,46 +14,6 @@ function removeDirectoryHelper(name, unit, cal) {
   removeDirectory(name, unit, cal)
 }
 
-function AddDirectoryScreen() {
-    
-  return (
-  <View style={styles.appContainer}>
-    <View style={styles.inputContainer}>
-      <Text style={styles.contentText}>Name</Text>
-      <TextInput 
-      style={styles.TextInput}
-      value={nameState}
-      onChangeText={txt => setNameState(txt)}/>
-    </View>
-      
-    <View style={styles.inputContainer}>
-      <Text style={styles.contentText}>Type</Text>
-      <TextInput 
-      style={styles.TextInput}
-      value={typeState}
-      onChangeText={txt => setTypeState(txt)}/>
-    </View>
-    
-    <View style={styles.inputContainer}>
-      <Text style={styles.contentText}>Calories</Text>
-      <TextInput 
-      keyboardType="numeric"
-      style={styles.TextInput}
-      value={calState}
-      onChangeText={txt => setCalState(txt)}/>
-    </View>
-    <Text></Text>
-    <Button style={styles.buttonContainer} title= 'Add To Directory' onPress={() => 
-      {
-        addDirectoryHelper(nameState, typeState, calState).then(() => {
-          setReload((r)=>r+1)
-        });
-
-      }}/>
-  </View>
-  );
-}
-
 export default function EditDirectory() {
   const [nameState, setNameState] = useState('')
   const [typeState, setTypeState] = useState('')
@@ -131,7 +91,7 @@ export default function EditDirectory() {
       <FlatList
         data={foodDirectory} 
         renderItem={({ item }) => {
-          console.log(item);
+          //console.log(item);
           let unit = '';
           switch(item.type){
             case 0:
