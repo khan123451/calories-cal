@@ -1,6 +1,6 @@
 # calories-cal
 <div align="center">
-<p> Hello and Welcome to use Calories Note application</p>
+<b> Hello! Welcome to use Calories Note application</b>
   <p>Built with React Native</p>
 <p>For convinent, I use Camera Scan screen as default screen, which is also the most useful screen in the app.</p>
   <b>
