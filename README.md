@@ -8,7 +8,7 @@ Main Menu
 </b>
   <img src="/demo/main_screen.png" alt="Main Menu Screen">
 <b>Camera Scan</b>
-  <img src="/demo/demo.png" alt="Camera Screen">
+  <img src="/demo/demo.png" width=100 alt="Camera Screen">
   <b>Scan Result</b>
   <p>This program use YoloV5s as based training tool and flask and Pytorch for backend server</p>
   <img src="/demo/res.png" alt="Result Screen 1">
@@ -22,6 +22,7 @@ Main Menu
   
   <img src="/demo/directory.png" alt="Directory">
 <div>
+  <br />
 # For image recognition and models, please check the Flask back end server repository, please check: https://github.com/khan123451/yolov5z
 # Also, it is avaliable on https://yolo-v5z-tndcixcleq-uc.a.run.app
 
