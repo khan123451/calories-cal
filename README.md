@@ -6,6 +6,7 @@
   <b>
 Main Menu
 </b>
+  <br />
   <img src="/demo/main_screen.png" width="200" alt="Main Menu Screen">
   <br />
 <b>Camera Scan</b>
