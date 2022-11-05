@@ -6,6 +6,7 @@
   <b>
 Main Menu
 </b>
+  <img src="/demo/main_screen.png" alt="Main Menu Screen">
   ![Alt text](/demo/main_screen.png?raw=true "Main Menu Screen")
 <b>Camera Scan</b>
   
