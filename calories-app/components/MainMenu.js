@@ -119,8 +119,7 @@ export default function MainMenu() {
                 blurOnSubmit
                 style={styles.TextInput}
                 value={mealState}
-                onChangeText= { val => 
-                  setMealState(val)}/>
+                onChangeText= {setMealState}/>
       <Button color="green" title="Add Meal" onPress={() => {
                       addMealHelper(dateVal, mealState).then(() => {
                         setReload((r)=>r+1)
@@ -135,7 +134,7 @@ export default function MainMenu() {
     return(
       <View styel={styles.AddMealScreen}>
         <AddMealScreen dateVal={dateVal}/>
-      <NavigationContainer ref={ref} independent={true}>
+      <NavigationContainer ref={ref} independent={true} >
         <Stack.Navigator style={{ flex: 1 }} >
           <Stack.Screen name="AddMeal" component={AddMealScreen} options={{headerShown: false}}/>
         </Stack.Navigator>

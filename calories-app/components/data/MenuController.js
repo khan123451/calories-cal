@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import Directory from '../Items/List/list.json'
+import Directory from '../settings/directory/directory.json'
 
 Date.prototype.toShortFormat = function() {
 
@@ -134,9 +134,6 @@ export async function addDate(dateVal) {
 
 
 export async function addMeal(dateVal, nameVal){
-  if (dateVal == ''){
-    dateVal = new Date().toShortFormat()
-  }
   if (nameVal == ''){
     alert('Meal cannot be none!')
     return ;
@@ -148,7 +145,22 @@ export async function addMeal(dateVal, nameVal){
   })
 
   if(dateCheck == ''){
-    alert('Date has not been created! Please create date first')
+    if (dateVal == ''){
+      dateVal = new Date().toShortFormat()
+      var dateCheck = jsonVal.list.filter(function(e){
+        return (e.date == dateVal)
+      })
+      if(dateCheck == ''){
+        let newDate = {
+          date: dateVal,
+          meals:[]
+        }
+        jsonVal.list.push(newDate)
+        saveData(jsonVal)
+      }
+    } else{
+      alert('Date has not been created! Please create date first')
+    }
   }
 
   jsonVal.list.filter(function(e){
@@ -172,9 +184,14 @@ export async function addMeal(dateVal, nameVal){
 }
 
 export async function addFood (dateVal, mealVal, foodVal, qtyVal, calVal) {
-  if(dateVal == ""){
-    dateVal = new Date().toShortFormat()
-  }
+
+  console.log('Date: ' + dateVal + ' Meal: ' + mealVal + ' Food: ' + foodVal + ' Qty: ' + qtyVal + ' Cal: ' + calVal)
+  
+  var jsonVal = await getData()
+  
+  var dateCheck = jsonVal.list.filter(function(e){
+    return (e.date == dateVal)
+  })
 
   if(mealVal == ""){
     mealVal = "Meal Scan"
@@ -197,25 +214,51 @@ export async function addFood (dateVal, mealVal, foodVal, qtyVal, calVal) {
       return ;
     }
   }
-  var jsonVal = await getData()
-
-  var dateCheck = jsonVal.list.filter(function(e){
-    return (e.date == dateVal)
-  })
 
   if(dateCheck == ''){
-    addDate(dateVal)
+    if (dateVal == ''){
+      dateVal = new Date().toShortFormat()
+      var dateCheck = jsonVal.list.filter(function(e){
+        return (e.date == dateVal)
+      })
+      if(dateCheck == ''){
+        let newDate = {
+          date: dateVal,
+          meals:[]
+        }
+        jsonVal.list.push(newDate)
+        saveData(jsonVal)
+      }
+    } else{
+      alert('Date has not been created! Please create date first')
+    }
   }
 
   var mealCheck = jsonVal.list.filter(function(e){
     if (e.date == dateVal){
-      return e.meals.filter(function(f) {
+      e.meals.filter(function(f) {
         return f.name == mealVal
       })
     }
   })
+
+
   if(JSON.stringify(mealCheck) == '[]'){
-    addMeal(dateVal, mealVal)
+    jsonVal.list.filter(function(e){
+      if (e.date == dateVal){
+        var mealCheck = e.meals.filter(function(f) {
+          return f.name == mealVal
+        })
+        if(mealCheck ==''){
+          let newMeal = {
+            name: mealVal,
+            foods:[]
+          }
+          e.meals.push(newMeal)
+        }
+      }
+      return e;
+    })
   }
 
   jsonVal.list.filter(function (e){
@@ -241,16 +284,21 @@ export async function addFood (dateVal, mealVal, foodVal, qtyVal, calVal) {
     }
     return e
   })
+  console.log('res: ' + JSON.stringify(jsonVal))
   saveData(jsonVal)
 }
 
 function getCal(food){
- for(var i in Directory){
-  if(Directory[i].name = food){
-    return Directory[i].cal
+ var res = Directory.map(function(e){
+  console.log('Name1: ' + e.name + ' Food1: ' + food)
+  if (e.name == food){
+    return e.cal
   }
- }
- return 0
+});
+if(res){
+  return '' + res
+}
+return '0'
 }
 
 
