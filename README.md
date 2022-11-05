@@ -1,6 +1,6 @@
 # Calories Reminder Application
 <div align="center">
-<h2> Hello! Welcome to use Calories Reminder application</h2>
+<h3> Hello! Welcome to use Calories Reminder application</h3>
   <p>Built with React Native</p>
 <p>For convinent, I use Camera Scan screen as default screen, which is also the most useful screen in the app.</p>
   <b>
