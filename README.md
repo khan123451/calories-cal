@@ -6,7 +6,7 @@
   <b>
 Main Menu
 </b>
-  
+  ![Alt text](/demo/main_screen.png?raw=true "Main Menu Screen")
 <b>Camera Scan</b>
   
   <b>Scan Result</b>
